@@ -1,0 +1,8 @@
+{
+  "welcome": "Hey, thanks for hosting Trivia. I'd be happy to help you adminster today's questions. Here's how I work:",
+  "help": [
+    "To ask questions use the command `/ask *(2 pt)* In 1992, This team won the NBA finals. A repeat before they came back to complete the threepeat in 1993.`",
+    "To award points, use the command `/award @Person <int:points>`",
+    "If you've upset the team (tough crowd, I know) and they convice you to accept a different answer, subtract points by using the award command with a negative number of points."
+  ]
+}
