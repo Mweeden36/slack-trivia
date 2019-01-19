@@ -18,14 +18,24 @@ function parse(text) {
   };
 }
 
-async function ask(req, res) {
-  const currentMC = getCurrentMC();
+function authAction(params, currentMC) {
   if (!currentMC) {
-    return send(res, 200, 'Oops, you need to run `/trivia start` first');
+    return 'Oops, you need to run `/trivia start` first';
   }
+  if (currentMC.id !== params.user_id) {
+    return `Only the MC can do that. You weren't trying to cheat, were you, <@${params.user_id}>?`;
+  }
+  return undefined;
+}
 
+async function ask(req, res) {
   try {
     const reqParams = await parseRequest(req);
+    const currentMC = getCurrentMC(reqParams.team_id);
+    const errorMessage = authAction(reqParams, currentMC);
+    if (errorMessage) {
+      return send(res, 200, errorMessage);
+    }
     const { questionText, points } = parse(reqParams.text);
     await mongoQuestion.create({
       question: questionText,
@@ -47,4 +57,5 @@ async function ask(req, res) {
 
 module.exports = {
   ask,
+  award,
 };

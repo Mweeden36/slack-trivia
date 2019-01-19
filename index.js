@@ -6,4 +6,5 @@ module.exports = router(
   get('/oauth', Slack.auth),
   post('/start', Trivia.handle),
   post('/ask', Question.ask),
+  post('/award', Question.award),
 );

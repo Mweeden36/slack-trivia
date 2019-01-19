@@ -25,7 +25,7 @@ function sendStartMessages(res, params) {
 }
 
 function start(res, params) {
-  setCurrentMC({ id: params.user_id, name: params.user_name });
+  setCurrentMC({ id: params.user_id, name: params.user_name }, params.team_id);
   return sendStartMessages(res, params);
 }
 

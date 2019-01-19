@@ -1,11 +1,11 @@
-let currentMC;
+let currentMC = {};
 
-function setCurrentMC(newMC) {
-  currentMC = newMC;
+function setCurrentMC(newMC, teamId) {
+  currentMC[teamId] = newMC;
 }
 
-function getCurrentMC() {
-  return currentMC;
+function getCurrentMC(teamId) {
+  return currentMC[teamId];
 }
 
 
