@@ -2,6 +2,7 @@ const { send } = require('micro');
 const parse = require('urlencoded-body-parser');
 const Question = require('../models/Question');
 const directions = require('../configs/directions.json');
+const { MCOnly } = require('../lib/middleware');
 const { sendPublicMessage, sendPrivateMessage } = require('../utils/messaging');
 const { setCurrentMC } = require('../utils/triviaInfo');
 
@@ -28,12 +29,12 @@ async function start(res, params) {
   return sendStartMessages(res, params);
 }
 
-async function printScoreboard(responseUrl) {
+async function printScoreboard(responseUrl, final = false) {
   const scoreboard = await Question.getScore();
   const scoreboardMessage = scoreboard.reduce((msg, player) => (
     `${msg}\n${player._id}: ${player.points}` // eslint-disable-line no-underscore-dangle
   ), '');
-  return sendPublicMessage(responseUrl, `*Final Score*:\`\`\`${scoreboardMessage}\`\`\``);
+  return sendPublicMessage(responseUrl, `${final ? '*Final Score*:' : ''}\`\`\`${scoreboardMessage}\`\`\``);
 }
 
 async function printBrainbusters(responseUrl) {
@@ -46,6 +47,14 @@ async function printBrainbusters(responseUrl) {
   }
   return sendPublicMessage(responseUrl, 'No brainbusters today. Next week: Harder questions.');
 }
+
+const end = MCOnly(async (req, res) => {
+  const params = await parse(req);
+  printScoreboard(params.response_url, true);
+  printBrainbusters(params.response_url);
+  setCurrentMC(null, params.team_id);
+  return send(res, 200);
+});
 
 async function handle(req, res) {
   try {
@@ -62,7 +71,7 @@ async function handle(req, res) {
       printBrainbusters(params.response_url);
       return send(res, 200);
     } else if (params.text === 'end') {
-      return send(res, 200);
+      return end(req, res);
     }
     return send(res, 200, 'Command not recognized. Usage: `/trivia [start | stop | score]`');
   } catch (e) {
