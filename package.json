@@ -1,6 +1,6 @@
 {
   "name": "slack-trivia-bot",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A Trivia Bot for Slack",
   "main": "index.js",
   "dependencies": {
