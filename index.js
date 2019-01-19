@@ -1,10 +1,9 @@
 const { router, get, post } = require('microrouter');
-const { Slack, Trivia } = require('./modules');
+const { Slack, Trivia, Question } = require('./modules');
 
 module.exports = router(
-  get('/', () => {
-    return 'it\'s working!';
-  }),
+  get('/', () => 'it\'s working!'),
   get('/oauth', Slack.auth),
   post('/start', Trivia.handle),
+  post('/ask', Question.ask),
 );

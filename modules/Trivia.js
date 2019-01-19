@@ -2,6 +2,7 @@ const { post } = require('axios');
 const { send } = require('micro');
 const parse = require('urlencoded-body-parser');
 const directions = require('../configs/directions.json');
+const { setCurrentMC } = require('../utils/triviaInfo');
 
 function sendStartMessages(res, params) {
   try {
@@ -24,13 +25,13 @@ function sendStartMessages(res, params) {
 }
 
 function start(res, params) {
+  setCurrentMC({ id: params.user_id, name: params.user_name });
   return sendStartMessages(res, params);
 }
 
 async function handle(req, res) {
   try {
     const reqParams = await parse(req);
-    console.log(reqParams);
     if (reqParams.text === 'start') {
       try {
         return start(res, reqParams);
