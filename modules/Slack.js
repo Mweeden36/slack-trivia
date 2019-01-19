@@ -2,6 +2,8 @@ const { get } = require('axios');
 const { send } = require('micro');
 const { slack } = require('../configs/secret.json');
 
+let authToken;
+
 async function auth(req, res) {
   if (!req.query.code) {
     return send(res, 400, { error: 'No code received.' });
@@ -18,6 +20,20 @@ async function auth(req, res) {
   }
 }
 
+async function listUsers() {
+  return get(`https://slack.com/api/users.list?token=${slack.botToken}`);
+}
+
+async function findUser(userName) {
+  try {
+    const users = await listUsers();
+    return users.data.members.find(user => user.name === userName);
+  } catch (e) {
+    throw new Error('Problem getting user list from slack api.');
+  }
+}
+
 module.exports = {
   auth,
+  findUser,
 };
