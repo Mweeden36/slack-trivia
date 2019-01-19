@@ -1,6 +1,6 @@
 const { get } = require('axios');
 const { send } = require('micro');
-const { slack } = require('../config.json');
+const { slack } = require('../configs/secret.json');
 
 async function auth(req, res) {
   if (!req.query.code) {

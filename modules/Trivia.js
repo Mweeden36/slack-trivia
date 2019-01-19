@@ -1,7 +1,7 @@
 const { post } = require('axios');
 const { send } = require('micro');
 const parse = require('urlencoded-body-parser');
-const directions = require('../directions.json');
+const directions = require('../configs/directions.json');
 
 function sendStartMessages(res, params) {
   try {
