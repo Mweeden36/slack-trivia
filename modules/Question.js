@@ -19,14 +19,15 @@ function parse(text) {
 }
 
 async function ask(req, res) {
+  const currentMC = getCurrentMC();
+  if (!currentMC) {
+    return send(res, 200, 'Oops, you need to run `/trivia start` first');
+  }
+
   try {
     const reqParams = await parseRequest(req);
     const { questionText, points } = parse(reqParams.text);
-    const currentMC = getCurrentMC();
-    if (!currentMC) {
-      return send(res, 200, 'Oops, you need to run `/trivia start` first');
-    }
-    const question = await mongoQuestion.create({
+    await mongoQuestion.create({
       question: questionText,
       MCName: currentMC.name,
       MCId: currentMC.id,
@@ -36,7 +37,6 @@ async function ask(req, res) {
       teamId: reqParams.team_id,
       timeAsked: new Date(),
     });
-    console.log(question);
     return send(res, 200, 'Question Accepted');
   } catch (e) {
     console.log(e.message);
