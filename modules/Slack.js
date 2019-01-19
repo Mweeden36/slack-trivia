@@ -2,8 +2,6 @@ const { get } = require('axios');
 const { send } = require('micro');
 const { slack } = require('../configs/secret.json');
 
-let authToken;
-
 async function auth(req, res) {
   if (!req.query.code) {
     return send(res, 400, { error: 'No code received.' });
