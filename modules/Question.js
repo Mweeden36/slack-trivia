@@ -6,7 +6,7 @@ const { getCurrentMC } = require('../utils/triviaInfo');
 const { MCOnly } = require('../lib/middleware');
 const { sendPublicMessage } = require('../utils/messaging');
 
-const questionRegex = new RegExp(/\*\(?(\d)\s?\w*\)?\*?\s*(.*)/mi);
+const questionRegex = new RegExp(/\*?\(?(\d)\s?\w*\)?\*?\s*(.*)/mi);
 const awardRegex = new RegExp(/@?(\S*)\s?(\d*)/mi);
 
 function parse(text) {
