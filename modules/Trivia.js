@@ -4,7 +4,7 @@ const Question = require('../models/Question');
 const directions = require('../configs/directions.json');
 const { MCOnly } = require('../lib/middleware');
 const { sendPublicMessage, sendPrivateMessage } = require('../utils/messaging');
-const { setCurrentMC } = require('../utils/triviaInfo');
+const { getCurrentMC, setCurrentMC } = require('../utils/triviaInfo');
 
 async function sendStartMessages(res, params) {
   try {
@@ -25,6 +25,10 @@ async function sendStartMessages(res, params) {
 }
 
 async function start(res, params) {
+  const currentMC = getCurrentMC(params.team_id);
+  if (currentMC) {
+    return send(res, 200, `Trivia is already in progress. The current MC is <@${currentMC.id}>. They need to run \`/trivia start\`.`);
+  }
   setCurrentMC({ id: params.user_id, name: params.user_name }, params.team_id);
   return sendStartMessages(res, params);
 }
