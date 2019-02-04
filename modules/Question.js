@@ -1,8 +1,8 @@
 const { send } = require('micro');
 const parseRequest = require('urlencoded-body-parser');
 const Question = require('../models/Question');
+const Session = require('../models/TriviaSession');
 const { findUser } = require('./Slack');
-const { getCurrentMC } = require('../utils/triviaInfo');
 const { MCOnly } = require('../lib/middleware');
 const { sendPublicMessage } = require('../utils/messaging');
 
@@ -55,12 +55,13 @@ const award = MCOnly(async (req, res) => {
 const ask = MCOnly(async (req, res) => {
   try {
     const params = await parseRequest(req);
-    const currentMC = getCurrentMC(params.team_id);
+    const currentSession = await Session.getCurrentSession(params.team_id);
     const { questionText, points } = parse(params.text);
     await new Question({
       question: questionText,
-      MCName: currentMC.name,
-      MCId: currentMC.id,
+      MCName: currentSession.name,
+      MCId: currentSession.MCId,
+      sessionId: currentSession.id,
       points,
       winnerName: null,
       winnerId: null,

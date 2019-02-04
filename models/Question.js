@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
+const Session = require('./TriviaSession');
 
 const QuestionSchema = new mongoose.Schema({
   question: String,
   MCName: String,
   MCId: String,
+  sessionId: mongoose.Schema.Types.ObjectId,
   points: Number,
   winnerName: String,
   winnerId: String,
@@ -14,13 +16,11 @@ const QuestionSchema = new mongoose.Schema({
 });
 
 QuestionSchema.statics = {
-  async getScore() {
-    const now = moment().subtract(1, 'hours');
+  async getScore(teamId) {
+    const currentSession = await Session.getCurrentSession(teamId);
     const pipeline = [{
       $match: {
-        createdAt: {
-          $gte: now.toDate(),
-        },
+        sessionId: currentSession._id,
         winnerId: {
           $ne: null,
         },
